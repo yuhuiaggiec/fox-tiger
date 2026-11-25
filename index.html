@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>狐假虎威進階挑戰</title>
+<style>
+body{margin:0;overflow:hidden;font-family:"Microsoft JhengHei",sans-serif;background:#1e3f20;user-select:none}
+canvas{display:block;width:100vw;height:100vh}
+#ui{position:fixed;inset:0;pointer-events:none;display:flex;flex-direction:column;justify-content:space-between}
+.top{background:rgba(0,0,0,.85);color:#fff;padding:10px 15px;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;border-bottom:3px solid #f39c12;pointer-events:auto;gap:6px;font-size:14px}
+.tb{background:#e67e22;color:#fff;border:none;padding:5px 9px;border-radius:5px;cursor:pointer;font-weight:bold}
+.box{background:rgba(15,25,15,.95);color:#fff;width:92%;max-width:750px;margin:0 auto 15px;padding:16px;border-radius:14px;border:3px solid #2ecc71;pointer-events:auto}
+#spk{font-size:16px;font-weight:bold;color:#f39c12;margin-bottom:5px}
+#txt{font-size:15px;line-height:1.4;margin-bottom:10px}
+.btn{display:block;width:100%;background:#27ae60;color:#fff;border:none;padding:11px;margin-bottom:7px;font-size:15px;border-radius:7px;cursor:pointer;text-align:left}
+.btn:hover{background:#2ecc71}.btn:disabled{background:#c0392b;cursor:not-allowed}
+.md{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);justify-content:center;align-items:center;pointer-events:auto;z-index:9}
+.cd{background:#fff;color:#333;width:88%;max-width:420px;padding:20px;border-radius:14px;text-align:center}
+table{width:100%;border-collapse:collapse;margin:10px 0;font-size:14px}th,td{border-bottom:1px solid #ddd;padding:5px}th{background:#f39c12;color:#fff}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="ui">
+<div class="top">
+<b style="color:#f1c40f">🦊 狐假虎威（進階版）</b>
+<div>❤️<span id="hp">3</span> ⭐<span id="sc">0</span> ⏱<span id="tm">0.0</span>s 🚩<span id="st">0</span>/10
+<button class="tb" onclick="bgm=!bgm;this.innerText=bgm?'🎵開':'🔇關'">🎵開</button>
+<button class="tb" style="background:#3498db" onclick="qr(1)">📱QR</button>
+<button class="tb" onclick="rk(1)">🏆排行</button>
+</div>
+</div>
+<div class="box">
+<div id="spk">🔥 高難度挑戰規則</div>
+<div id="txt">共 10 道文言文與深度理解關卡！只有 3 顆愛心，連續答對有連擊加分！</div>
+<div id="opts"><button class="btn" onclick="go()">▶ 開啟音樂並開始計時挑戰！</button></div>
+</div>
+</div>
+<div id="rm" class="md"><div class="cd">
+<h3 style="margin-top:0;color:#d35400">🏆 森林智謀英雄榜</h3>
+<div id="sa" style="display:none"><p id="rmg" style="font-weight:bold;color:#27ae60"></p><input id="un" placeholder="座號姓名（例：601-05王小明）" style="padding:7px;width:65%"><button class="tb" style="background:#27ae60;padding:7px 12px" onclick="sv()">登錄</button></div>
+<table><thead><tr><th>名次</th><th>挑戰者</th><th>分數</th><th>時間</th></tr></thead><tbody id="rl"></tbody></table>
+<button class="tb" style="background:#7f8c8d" onclick="rk(0)">關閉</button> <button class="tb" onclick="location.reload()">重玩</button>
+</div></div>
+<div id="qm" class="md"><div class="cd">
+<h3 style="margin-top:0;color:#2980b9">📱 全班平板掃碼連線</h3><div id="qc"></div>
+<button class="tb" style="background:#7f8c8d;margin-top:10px" onclick="qr(0)">關閉</button>
+</div></div>
+<script>
+let ax,bgm=1,bt,W,H,pg=0,fl=0,sc=0,hp=3,cb=0,t0=0,td,sec=0;
+function tn(f,d,tp='sine',v=.1){if(!bgm)return;try{if(!ax)ax=new(window.AudioContext||window.webkitAudioContext)();let o=ax.createOscillator(),g=ax.createGain();o.type=tp;o.frequency.value=f;g.gain.setValueAtTime(v,ax.currentTime);g.gain.exponentialRampToValueAtTime(.001,ax.currentTime+d);o.connect(g);g.connect(ax.destination);o.start();o.stop(ax.currentTime+d)}catch(e){}}
+const c=document.getElementById('c'),x=c.getContext('2d');
+function rz(){W=c.width=innerWidth;H=c.height=innerHeight}onresize=rz;rz();
+(function lp(){
+x.fillStyle="#87ceeb";x.fillRect(0,0,W,H*.25);x.fillStyle="#2d5a3c";x.fillRect(0,H*.25,W,H*.75);
+x.fillStyle="#c2a378";x.beginPath();x.moveTo(W*.45,H*.25);x.lineTo(W*.55,H*.25);x.lineTo(W*.75,H);x.lineTo(W*.25,H);x.fill();
+x.font="36px Arial";x.textAlign="center";
+new Array("🌲","🌳","🌲","🌳").forEach((t,i)=>x.fillText(t,W*(i%2?.8:.2),H*(.3+i*.12)));
+if(fl>0)fl+=2.5;x.fillText("🦌",W*.28-fl,H*.42);x.fillText("🐗",W*.72+fl,H*.45);x.fillText("🐇",W*.25-fl*1.2,H*.55);x.fillText("🐿️",W*.75+fl*1.2,H*.58);
+let y=H*.62-pg*(H*.28);x.font="48px Arial";x.fillText("🦊",W*.5,y);x.font="62px Arial";x.fillText("🐯",W*.5,y+60);requestAnimationFrame(lp);
+})();
+const Q=new Array(
+{s:"📜 第1關：字義深究",t:"「狐假虎威」的「假」字，與下列哪個詞語意思相同？",a:"不假思索（借、憑藉）",b:"弄假成真（不真實）",c:"寒假作業（休息日）"},
+{s:"🐯 第2關：文言文原句",t:"《戰國策》原文「子無敢食我也」，句中的「子」是指誰？",a:"老虎（對對方的尊稱）",b:"狐狸自己",c:"天帝"},
+{s:"🎭 第3關：修辭與心理",t:"「天帝使我長百獸」這句話中，狐狸採用了什麼戰術？",a:"抬出最高權威壓制對手，使老虎不敢輕舉妄動",b:"以退為進，故意示弱博取同情",c:"使用激將法挑釁老虎尊嚴"},
+{s:"👀 第4關：文言文對照",t:"原文「虎以為然，故遂與之行」的意思是什麼？",a:"老虎認為說得對，於是就跟牠一起走",b:"老虎覺得奇怪，跟在後面偷看",c:"老虎很生氣，把狐狸趕出森林"},
+{s:"🐾 第5關：神態對比",t:"下列哪一組詞語最能精準對比狐狸與老虎行走時的心理？",a:"狐狸「故作鎮定、趾高氣揚」；老虎「將信將疑、戒慎恐懼」",b:"狐狸「膽戰心驚」；老虎「胸有成竹」",c:"狐狸「得意忘形」；老虎「暴跳如雷」"},
+{s:"🦌 第6關：因果邏輯",t:"「虎不知獸畏己而走也，以為畏狐也。」點出老虎犯了什麼錯？",a:"倒果為因，誤把百獸對自己的恐懼當成對狐狸的敬畏",b:"低估了狐狸在森林裡的號召力",c:"沒發現百獸其實是在歡迎牠們"},
+{s:"🏛️ 第7關：歷史背景",t:"這則寓言是戰國楚國大臣江乙向楚宣王進諫的故事，江乙用「狐狸」比喻誰？",a:"仗著楚王權勢欺壓群臣的令尹昭奚恤",b:"企圖侵略楚國的北方諸侯",c:"只顧享樂的楚宣王"},
+{s:"📖 第8關：近義成語",t:"下列哪一個成語的寓意與「狐假虎威」最接近？",a:"狗仗人勢",b:"畫蛇添足",c:"守株待兔"},
+{s:"🧠 第9關：批判思考",t:"如果老虎當時保持冷靜，採用哪一種驗證方法，就能立刻拆穿狐狸的謊言？",a:"讓狐狸單獨走在前面，自己躲在遠處草叢裡偷偷觀察",b:"緊跟在狐狸身後大吼一聲，看看百獸會不會跑得更快",c:"要求狐狸帶自己去人煙稀少的山洞裡走一趟"},
+{s:"💡 第10關：古今字詞義",t:"原文「獸見之皆走」中的「走」字，與下列哪個詞語的「走」字意思相同？",a:"不脛而走（奔跑、逃跑）",b:"走漏風聲（洩漏、失去）",c:"飯後百步走（慢慢步行）"}
+);
+function go(){
+let ns=new Array(261.6,293.7,329.6,392,440,392,329.6,293.7),k=0;
+bt=setInterval(()=>{if(bgm)tn(ns.at(k++%ns.length),.3,'triangle',.04)},450);
+tn(523.2,.2);t0=Date.now();td=setInterval(()=>{sec=((Date.now()-t0)/1000).toFixed(1);document.getElementById('tm').innerText=sec},100);ld(0);
+}
+function ld(i){
+if(hp<=0){clearInterval(td);clearInterval(bt);tn(150,.5,'sawtooth',.2);alert("💔 愛心耗盡！計謀被識破了，再試一次！");location.reload();return}
+if(i>=Q.length){clearInterval(td);clearInterval(bt);new Array(523,659,784,1046).forEach((f,j)=>setTimeout(()=>tn(f,.25,'triangle',.15),j*110));document.getElementById('sa').style.display='block';document.getElementById('rmg').innerText=`🎉 通關！得分：${sc} ｜ 耗時：${sec}秒`;rk(1);return}
+let q=Q.at(i);document.getElementById('st').innerText=i+1;if(i===5)fl=1;
+document.getElementById('spk').innerText=q.s+(cb>1?` 🔥(${cb}連擊!)`:'');document.getElementById('txt').innerText=q.t;
+const bx=document.getElementById('opts');bx.innerHTML='';
+new Array({t:q.a,ok:1},{t:q.b,ok:0},{t:q.c,ok:0}).sort(()=>Math.random()-.5).forEach(o=>{
+const b=document.createElement('button');b.className='btn';b.innerText=o.t;
+b.onclick=()=>{
+if(o.ok){cb++;sc+=10+cb*2;tn(659,.12);setTimeout(()=>tn(880,.18),90);document.getElementById('sc').innerText=sc;pg=(i+1)/Q.length;ld(i+1)}
+else{cb=0;hp--;sc=Math.max(0,sc-5);tn(180,.25,'sawtooth',.15);document.getElementById('hp').innerText=hp;document.getElementById('sc').innerText=sc;b.innerText="❌ 答錯（-1❤️、-5分），重選！";b.disabled=true;if(hp<=0)ld(i)}
+};bx.appendChild(b);
+});
+}
+function rk(s){document.getElementById('rm').style.display=s?'flex':'none';if(s){let d=JSON.parse(localStorage.getItem('ft3')||'[]');document.getElementById('rl').innerHTML=d.length?d.map((r,i)=>`<tr><td>${i+1}</td><td>${r.n}</td><td>${r.s}</td><td>${r.t}s</td></tr>`).join(''):'<tr><td colspan="4">尚無紀錄</td></tr>'}}
+function sv(){let n=document.getElementById('un').value.trim();if(!n)return alert("請輸入名字");let d=JSON.parse(localStorage.getItem('ft3')||'[]');d.push({n,s:sc,t:parseFloat(sec)});d.sort((a,b)=>b.s-a.s||a.t-b.t);localStorage.setItem('ft3',JSON.stringify(d.slice(0,10)));document.getElementById('sa').style.display='none';rk(1)}
+function qr(s){document.getElementById('qm').style.display=s?'flex':'none';if(!s)return;let u=location.href;document.getElementById('qc').innerHTML=u.startsWith('file://')?'<p style="color:#c0392b;font-weight:bold">⚠️ 目前是電腦本機檔案，上傳至 Tiiny.host 或 GitHub 變成網址後，這裡就會自動顯示全班可掃描的 QR Code！</p>':`<img src="https://qrserver.com{encodeURIComponent(u)}"><p style="font-size:12px;word-break:break-all">${u}</p>`}
+</script>
+</body>
+</html>
