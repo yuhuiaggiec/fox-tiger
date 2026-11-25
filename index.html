@@ -3,9 +3,10 @@
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>狐假虎威進階挑戰</title>
+<script src="https://cloudflare.com"></script>
 <style>
 body{margin:0;overflow:hidden;font-family:"Microsoft JhengHei",sans-serif;background:#1e3f20;user-select:none}
-canvas{display:block;width:100vw;height:100vh}
+canvas#c{display:block;width:100vw;height:100vh}
 #ui{position:fixed;inset:0;pointer-events:none;display:flex;flex-direction:column;justify-content:space-between}
 .top{background:rgba(0,0,0,.85);color:#fff;padding:10px 15px;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;border-bottom:3px solid #f39c12;pointer-events:auto;gap:6px;font-size:14px}
 .tb{background:#e67e22;color:#fff;border:none;padding:5px 9px;border-radius:5px;cursor:pointer;font-weight:bold}
@@ -16,6 +17,7 @@ canvas{display:block;width:100vw;height:100vh}
 .btn:hover{background:#2ecc71}.btn:disabled{background:#c0392b;cursor:not-allowed}
 .md{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);justify-content:center;align-items:center;pointer-events:auto;z-index:9}
 .cd{background:#fff;color:#333;width:88%;max-width:420px;padding:20px;border-radius:14px;text-align:center}
+#qrcode{display:flex;justify-content:center;margin:15px auto}
 table{width:100%;border-collapse:collapse;margin:10px 0;font-size:14px}th,td{border-bottom:1px solid #ddd;padding:5px}th{background:#f39c12;color:#fff}
 </style>
 </head>
@@ -43,7 +45,9 @@ table{width:100%;border-collapse:collapse;margin:10px 0;font-size:14px}th,td{bor
 <button class="tb" style="background:#7f8c8d" onclick="rk(0)">關閉</button> <button class="tb" onclick="location.reload()">重玩</button>
 </div></div>
 <div id="qm" class="md"><div class="cd">
-<h3 style="margin-top:0;color:#2980b9">📱 全班平板掃碼連線</h3><div id="qc"></div>
+<h3 style="margin-top:0;color:#2980b9">📱 全班平板掃碼連線</h3>
+<div id="qrcode"></div>
+<p id="qurl" style="font-size:12px;word-break:break-all;color:#555"></p>
 <button class="tb" style="background:#7f8c8d;margin-top:10px" onclick="qr(0)">關閉</button>
 </div></div>
 <script>
@@ -92,7 +96,19 @@ else{cb=0;hp--;sc=Math.max(0,sc-5);tn(180,.25,'sawtooth',.15);document.getElemen
 }
 function rk(s){document.getElementById('rm').style.display=s?'flex':'none';if(s){let d=JSON.parse(localStorage.getItem('ft3')||'[]');document.getElementById('rl').innerHTML=d.length?d.map((r,i)=>`<tr><td>${i+1}</td><td>${r.n}</td><td>${r.s}</td><td>${r.t}s</td></tr>`).join(''):'<tr><td colspan="4">尚無紀錄</td></tr>'}}
 function sv(){let n=document.getElementById('un').value.trim();if(!n)return alert("請輸入名字");let d=JSON.parse(localStorage.getItem('ft3')||'[]');d.push({n,s:sc,t:parseFloat(sec)});d.sort((a,b)=>b.s-a.s||a.t-b.t);localStorage.setItem('ft3',JSON.stringify(d.slice(0,10)));document.getElementById('sa').style.display='none';rk(1)}
-function qr(s){document.getElementById('qm').style.display=s?'flex':'none';if(!s)return;let u=location.href;document.getElementById('qc').innerHTML=u.startsWith('file://')?'<p style="color:#c0392b;font-weight:bold">⚠️ 目前是電腦本機檔案，上傳至 Tiiny.host 或 GitHub 變成網址後，這裡就會自動顯示全班可掃描的 QR Code！</p>':`<img src="https://qrserver.com{encodeURIComponent(u)}"><p style="font-size:12px;word-break:break-all">${u}</p>`}
+function qr(s){
+document.getElementById('qm').style.display=s?'flex':'none';
+if(!s)return;
+const u=location.href,box=document.getElementById('qrcode'),txt=document.getElementById('qurl');
+box.innerHTML='';
+if(u.startsWith('file://')){
+box.innerHTML='<p style="color:#c0392b;font-weight:bold">⚠️ 目前是電腦本機檔案，請用 GitHub 網址打開此遊戲，QR Code 就會自動出現！</p>';
+txt.innerText='';
+}else{
+new QRCode(box,{text:u,width:200,height:200});
+txt.innerText=u;
+}
+}
 </script>
 </body>
 </html>
