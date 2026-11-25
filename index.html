@@ -2,22 +2,21 @@
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>狐假虎威進階挑戰</title>
-<script src="https://cloudflare.com"></script>
+<title>狐假虎威 2.0：終極生存戰</title>
 <style>
-body{margin:0;overflow:hidden;font-family:"Microsoft JhengHei",sans-serif;background:#1e3f20;user-select:none}
-canvas#c{display:block;width:100vw;height:100vh}
+body{margin:0;overflow:hidden;font-family:"Microsoft JhengHei",sans-serif;background:#142b19;user-select:none}
+canvas{display:block;width:100vw;height:100vh}
 #ui{position:fixed;inset:0;pointer-events:none;display:flex;flex-direction:column;justify-content:space-between}
-.top{background:rgba(0,0,0,.85);color:#fff;padding:10px 15px;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;border-bottom:3px solid #f39c12;pointer-events:auto;gap:6px;font-size:14px}
-.tb{background:#e67e22;color:#fff;border:none;padding:5px 9px;border-radius:5px;cursor:pointer;font-weight:bold}
-.box{background:rgba(15,25,15,.95);color:#fff;width:92%;max-width:750px;margin:0 auto 15px;padding:16px;border-radius:14px;border:3px solid #2ecc71;pointer-events:auto}
-#spk{font-size:16px;font-weight:bold;color:#f39c12;margin-bottom:5px}
-#txt{font-size:15px;line-height:1.4;margin-bottom:10px}
-.btn{display:block;width:100%;background:#27ae60;color:#fff;border:none;padding:11px;margin-bottom:7px;font-size:15px;border-radius:7px;cursor:pointer;text-align:left}
-.btn:hover{background:#2ecc71}.btn:disabled{background:#c0392b;cursor:not-allowed}
+.top{background:rgba(10,20,12,.9);color:#fff;padding:10px 15px;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;pointer-events:auto;gap:8px;font-size:14px;border-bottom:3px solid #f1c40f}
+.tb{background:#e67e22;color:#fff;border:none;padding:5px 10px;border-radius:7px;cursor:pointer;font-weight:bold}
+.bar{width:85px;height:12px;background:#444;border-radius:6px;display:inline-block;overflow:hidden;vertical-align:middle}
+#sbar{height:100%;width:0%;background:#e74c3c;transition:.2s}
+#hint{background:rgba(0,0,0,.7);color:#f1c40f;padding:6px 14px;border-radius:20px;margin:8px auto;font-size:13px;text-align:center}
 .md{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);justify-content:center;align-items:center;pointer-events:auto;z-index:9}
-.cd{background:#fff;color:#333;width:88%;max-width:420px;padding:20px;border-radius:14px;text-align:center}
-#qrcode{display:flex;justify-content:center;margin:15px auto}
+.cd{background:#182c1d;color:#fff;border:3px solid #f1c40f;width:90%;max-width:480px;padding:22px;border-radius:16px;text-align:center}
+.wcd{background:#fff;color:#333;width:88%;max-width:420px;padding:20px;border-radius:16px;text-align:center}
+.btn{display:block;width:100%;background:#27ae60;color:#fff;border:none;padding:11px;margin-top:8px;font-size:15px;font-weight:bold;border-radius:8px;cursor:pointer;text-align:left}
+.btn:disabled{background:#922b21}
 table{width:100%;border-collapse:collapse;margin:10px 0;font-size:14px}th,td{border-bottom:1px solid #ddd;padding:5px}th{background:#f39c12;color:#fff}
 </style>
 </head>
@@ -25,90 +24,113 @@ table{width:100%;border-collapse:collapse;margin:10px 0;font-size:14px}th,td{bor
 <canvas id="c"></canvas>
 <div id="ui">
 <div class="top">
-<b style="color:#f1c40f">🦊 狐假虎威（進階版）</b>
-<div>❤️<span id="hp">3</span> ⭐<span id="sc">0</span> ⏱<span id="tm">0.0</span>s 🚩<span id="st">0</span>/10
+<b style="color:#f1c40f;font-size:16px">🦊 狐假虎威 2.0：終極生存戰</b>
+<div>😱威風:<span id="fw">0</span>/8 ｜ 🗿石碑:<span id="st">0</span>/5 ｜ 🐯懷疑:<div class="bar"><div id="sbar"></div></div> ｜ ⏱<span id="tm">0.0</span>s
 <button class="tb" onclick="bgm=!bgm;this.innerText=bgm?'🎵開':'🔇關'">🎵開</button>
-<button class="tb" style="background:#3498db" onclick="qr(1)">📱QR</button>
+<button class="tb" style="background:#2980b9" onclick="qr()">📱QR</button>
 <button class="tb" onclick="rk(1)">🏆排行</button>
 </div>
 </div>
-<div class="box">
-<div id="spk">🔥 高難度挑戰規則</div>
-<div id="txt">共 10 道文言文與深度理解關卡！只有 3 顆愛心，連續答對有連擊加分！</div>
-<div id="opts"><button class="btn" onclick="go()">▶ 開啟音樂並開始計時挑戰！</button></div>
+<div id="hint">⚠️ 保持與老虎的 <b>黃金連線距離</b> 嚇跑百獸！閃避 <b>🪤捕獸夾</b>，吃 <b>🌿仙草</b> 降懷疑，看右下角 <b>雷達</b> 找石碑！</div>
+<div></div>
 </div>
-</div>
-<div id="rm" class="md"><div class="cd">
+<div id="qm2" class="md" style="display:flex"><div class="cd">
+<h2 style="margin-top:0;color:#f1c40f">🔥 狐假虎威 2.0：走位心理戰</h2>
+<p style="text-align:left;line-height:1.6"><b>🆕 全新突破玩法：</b><br>1. <b>控制距離</b>：離老虎太遠，百獸不會怕你且老虎會起疑；被老虎追上則會被咬！<br>2. <b>閃避機關</b>：小心草叢裡的 <b>🪤捕獸夾</b>（踩到會定身！），多吃 <b>🌿仙草</b> 降低懷疑！<br>3. <b>終極 Boss</b>：集滿 8 隻百獸＋5 座石碑後，迎戰 <b>🐺老狼的當面拆穿</b>！</p>
+<button class="btn" style="text-align:center;font-size:17px" onclick="go()">▶ 進入終極生存戰！</button>
+</div></div>
+<div id="rm" class="md"><div class="wcd">
 <h3 style="margin-top:0;color:#d35400">🏆 森林智謀英雄榜</h3>
-<div id="sa" style="display:none"><p id="rmg" style="font-weight:bold;color:#27ae60"></p><input id="un" placeholder="座號姓名（例：601-05王小明）" style="padding:7px;width:65%"><button class="tb" style="background:#27ae60;padding:7px 12px" onclick="sv()">登錄</button></div>
+<div id="sa" style="display:none"><p id="rmg" style="font-weight:bold;color:#27ae60"></p><input id="un" placeholder="座號姓名（例：601-05王小明）" style="padding:7px;width:65%"><button class="tb" style="background:#27ae60" onclick="sv()">登錄</button></div>
 <table><thead><tr><th>名次</th><th>挑戰者</th><th>分數</th><th>時間</th></tr></thead><tbody id="rl"></tbody></table>
 <button class="tb" style="background:#7f8c8d" onclick="rk(0)">關閉</button> <button class="tb" onclick="location.reload()">重玩</button>
 </div></div>
-<div id="qm" class="md"><div class="cd">
-<h3 style="margin-top:0;color:#2980b9">📱 全班平板掃碼連線</h3>
-<div id="qrcode"></div>
-<p id="qurl" style="font-size:12px;word-break:break-all;color:#555"></p>
-<button class="tb" style="background:#7f8c8d;margin-top:10px" onclick="qr(0)">關閉</button>
-</div></div>
 <script>
-let ax,bgm=1,bt,W,H,pg=0,fl=0,sc=0,hp=3,cb=0,t0=0,td,sec=0;
+let ax,bgm=1,bt,W,H,sc=0,susp=0,fw=0,st=0,t0=0,td,sec=0,run=0,wave=0,stun=0,boss=0;
+let fx={x:700,y:700,tx:700,ty:700},tg={x:770,y:770},keys=new Object();
 function tn(f,d,tp='sine',v=.1){if(!bgm)return;try{if(!ax)ax=new(window.AudioContext||window.webkitAudioContext)();let o=ax.createOscillator(),g=ax.createGain();o.type=tp;o.frequency.value=f;g.gain.setValueAtTime(v,ax.currentTime);g.gain.exponentialRampToValueAtTime(.001,ax.currentTime+d);o.connect(g);g.connect(ax.destination);o.start();o.stop(ax.currentTime+d)}catch(e){}}
 const c=document.getElementById('c'),x=c.getContext('2d');
 function rz(){W=c.width=innerWidth;H=c.height=innerHeight}onresize=rz;rz();
-(function lp(){
-x.fillStyle="#87ceeb";x.fillRect(0,0,W,H*.25);x.fillStyle="#2d5a3c";x.fillRect(0,H*.25,W,H*.75);
-x.fillStyle="#c2a378";x.beginPath();x.moveTo(W*.45,H*.25);x.lineTo(W*.55,H*.25);x.lineTo(W*.75,H);x.lineTo(W*.25,H);x.fill();
-x.font="36px Arial";x.textAlign="center";
-new Array("🌲","🌳","🌲","🌳").forEach((t,i)=>x.fillText(t,W*(i%2?.8:.2),H*(.3+i*.12)));
-if(fl>0)fl+=2.5;x.fillText("🦌",W*.28-fl,H*.42);x.fillText("🐗",W*.72+fl,H*.45);x.fillText("🐇",W*.25-fl*1.2,H*.55);x.fillText("🐿️",W*.75+fl*1.2,H*.58);
-let y=H*.62-pg*(H*.28);x.font="48px Arial";x.fillText("🦊",W*.5,y);x.font="62px Arial";x.fillText("🐯",W*.5,y+60);requestAnimationFrame(lp);
-})();
+onkeydown=e=>keys[e.key.toLowerCase()]=1;onkeyup=e=>keys[e.key.toLowerCase()]=0;
+c.onclick=e=>{if(run&&stun<=0){fx.tx=fx.x+(e.clientX-W/2);fx.ty=fx.y+(e.clientY-H/2)}};
+const trees=new Array(),beasts=new Array(),pillars=new Array(),traps=new Array(),herbs=new Array();
+for(let i=0;i<50;i++)trees.push({x:Math.random()*1500,y:Math.random()*1500,ic:i%2?"🌲":"🌳"});
+const bIcons=new Array("🦌","🐗","🐇","🐿️","🐐","🦚","🦝","🐒");
+for(let i=0;i<8;i++)beasts.push({x:150+Math.random()*1200,y:150+Math.random()*1200,ic:bIcons.at(i),flee:0,vx:0,vy:0});
+for(let i=0;i<10;i++)traps.push({x:120+Math.random()*1260,y:120+Math.random()*1260,used:0});
+for(let i=0;i<6;i++)herbs.push({x:120+Math.random()*1260,y:120+Math.random()*1260,used:0});
 const Q=new Array(
-{s:"📜 第1關：字義深究",t:"「狐假虎威」的「假」字，與下列哪個詞語意思相同？",a:"不假思索（借、憑藉）",b:"弄假成真（不真實）",c:"寒假作業（休息日）"},
-{s:"🐯 第2關：文言文原句",t:"《戰國策》原文「子無敢食我也」，句中的「子」是指誰？",a:"老虎（對對方的尊稱）",b:"狐狸自己",c:"天帝"},
-{s:"🎭 第3關：修辭與心理",t:"「天帝使我長百獸」這句話中，狐狸採用了什麼戰術？",a:"抬出最高權威壓制對手，使老虎不敢輕舉妄動",b:"以退為進，故意示弱博取同情",c:"使用激將法挑釁老虎尊嚴"},
-{s:"👀 第4關：文言文對照",t:"原文「虎以為然，故遂與之行」的意思是什麼？",a:"老虎認為說得對，於是就跟牠一起走",b:"老虎覺得奇怪，跟在後面偷看",c:"老虎很生氣，把狐狸趕出森林"},
-{s:"🐾 第5關：神態對比",t:"下列哪一組詞語最能精準對比狐狸與老虎行走時的心理？",a:"狐狸「故作鎮定、趾高氣揚」；老虎「將信將疑、戒慎恐懼」",b:"狐狸「膽戰心驚」；老虎「胸有成竹」",c:"狐狸「得意忘形」；老虎「暴跳如雷」"},
-{s:"🦌 第6關：因果邏輯",t:"「虎不知獸畏己而走也，以為畏狐也。」點出老虎犯了什麼錯？",a:"倒果為因，誤把百獸對自己的恐懼當成對狐狸的敬畏",b:"低估了狐狸在森林裡的號召力",c:"沒發現百獸其實是在歡迎牠們"},
-{s:"🏛️ 第7關：歷史背景",t:"這則寓言是戰國楚國大臣江乙向楚宣王進諫的故事，江乙用「狐狸」比喻誰？",a:"仗著楚王權勢欺壓群臣的令尹昭奚恤",b:"企圖侵略楚國的北方諸侯",c:"只顧享樂的楚宣王"},
-{s:"📖 第8關：近義成語",t:"下列哪一個成語的寓意與「狐假虎威」最接近？",a:"狗仗人勢",b:"畫蛇添足",c:"守株待兔"},
-{s:"🧠 第9關：批判思考",t:"如果老虎當時保持冷靜，採用哪一種驗證方法，就能立刻拆穿狐狸的謊言？",a:"讓狐狸單獨走在前面，自己躲在遠處草叢裡偷偷觀察",b:"緊跟在狐狸身後大吼一聲，看看百獸會不會跑得更快",c:"要求狐狸帶自己去人煙稀少的山洞裡走一趟"},
-{s:"💡 第10關：古今字詞義",t:"原文「獸見之皆走」中的「走」字，與下列哪個詞語的「走」字意思相同？",a:"不脛而走（奔跑、逃跑）",b:"走漏風聲（洩漏、失去）",c:"飯後百步走（慢慢步行）"}
+{s:"🗿 石碑一：字義深究",t:"「狐假虎威」的「假」字，與下列哪個詞語意思相同？",a:"不假思索（借、憑藉）",b:"弄假成真（不真實）",c:"寒假作業（休息日）"},
+{s:"🗿 石碑二：文言文原句",t:"《戰國策》原文「子無敢食我也」，句中的「子」是指誰？",a:"老虎（對對方的尊稱）",b:"狐狸自己",c:"天帝"},
+{s:"🗿 石碑三：神態對比",t:"走進森林時，課文如何形容狐狸與老虎的神態？",a:"狐狸「神氣活現、搖頭擺尾」；老虎「半信半疑、東張西望」",b:"狐狸「膽戰心驚」；老虎「胸有成竹」",c:"狐狸「得意忘形」；老虎「暴跳如雷」"},
+{s:"🗿 石碑四：因果邏輯",t:"「虎不知獸畏己而走也，以為畏狐也。」點出老虎犯了什麼錯？",a:"倒果為因，誤把百獸對自己的恐懼當成對狐狸的敬畏",b:"低估了狐狸在森林裡的號召力",c:"沒發現百獸其實是在歡迎牠們"},
+{s:"🗿 石碑五：古今字詞義",t:"原文「獸見之皆走」中的「走」字，與下列哪個詞語意思相同？",a:"不脛而走（奔跑、逃跑）",b:"走漏風聲（洩漏、失去）",c:"飯後百步走（慢慢步行）"},
+{s:"🐺 終極對決：老狼的質疑",t:"老狼大喊：「大王別信牠，百獸明明是怕您才跑的！」此時狐狸該怎麼反擊才能保命？",a:"「大膽狂徒！天帝派我巡視森林，你竟敢挑撥離間、冒犯天威？」",b:"「對不起我錯了，請老虎大王饒我一命！」",c:"「其實百獸怕的是老狼，不是怕我！」"}
 );
-function go(){
-let ns=new Array(261.6,293.7,329.6,392,440,392,329.6,293.7),k=0;
-bt=setInterval(()=>{if(bgm)tn(ns.at(k++%ns.length),.3,'triangle',.04)},450);
-tn(523.2,.2);t0=Date.now();td=setInterval(()=>{sec=((Date.now()-t0)/1000).toFixed(1);document.getElementById('tm').innerText=sec},100);ld(0);
-}
-function ld(i){
-if(hp<=0){clearInterval(td);clearInterval(bt);tn(150,.5,'sawtooth',.2);alert("💔 愛心耗盡！計謀被識破了，再試一次！");location.reload();return}
-if(i>=Q.length){clearInterval(td);clearInterval(bt);new Array(523,659,784,1046).forEach((f,j)=>setTimeout(()=>tn(f,.25,'triangle',.15),j*110));document.getElementById('sa').style.display='block';document.getElementById('rmg').innerText=`🎉 通關！得分：${sc} ｜ 耗時：${sec}秒`;rk(1);return}
-let q=Q.at(i);document.getElementById('st').innerText=i+1;if(i===5)fl=1;
-document.getElementById('spk').innerText=q.s+(cb>1?` 🔥(${cb}連擊!)`:'');document.getElementById('txt').innerText=q.t;
-const bx=document.getElementById('opts');bx.innerHTML='';
-new Array({t:q.a,ok:1},{t:q.b,ok:0},{t:q.c,ok:0}).sort(()=>Math.random()-.5).forEach(o=>{
+for(let i=0;i<5;i++)pillars.push({x:220+(i%3)*500,y:250+Math.floor(i/3)*750,q:Q.at(i),done:0});
+function go(){document.getElementById('qm2').style.display='none';run=1;let ns=new Array(330,392,440,523,440,392,330,294),k=0;bt=setInterval(()=>{if(bgm&&run)tn(ns.at(k++%ns.length),.28,'triangle',.045)},380);t0=Date.now();td=setInterval(()=>{if(run){sec=((Date.now()-t0)/1000).toFixed(1);document.getElementById('tm').innerText=sec}},100)}
+function addSusp(v){susp=Math.max(0,Math.min(100,susp+v));document.getElementById('sbar').style.width=susp+'%';if(susp>=100){run=0;clearInterval(td);clearInterval(bt);tn(110,.6,'sawtooth',.25);alert("🐯 老虎徹底看穿你的把戲（懷疑度100%），一口撲上來了！");location.reload()}}
+function ask(qObj,isBoss){
+run=0;const m=document.getElementById('qm2');m.style.display='flex';
+m.innerHTML=`<div class="cd"><h3 style="color:#f1c40f;margin-top:0">${qObj.s}</h3><p style="text-align:left;line-height:1.5">${qObj.t}</p><div id="op"></div></div>`;
+const bx=document.getElementById('op');
+new Array({t:qObj.a,ok:1},{t:qObj.b,ok:0},{t:qObj.c,ok:0}).sort(()=>Math.random()-.5).forEach(o=>{
 const b=document.createElement('button');b.className='btn';b.innerText=o.t;
 b.onclick=()=>{
-if(o.ok){cb++;sc+=10+cb*2;tn(659,.12);setTimeout(()=>tn(880,.18),90);document.getElementById('sc').innerText=sc;pg=(i+1)/Q.length;ld(i+1)}
-else{cb=0;hp--;sc=Math.max(0,sc-5);tn(180,.25,'sawtooth',.15);document.getElementById('hp').innerText=hp;document.getElementById('sc').innerText=sc;b.innerText="❌ 答錯（-1❤️、-5分），重選！";b.disabled=true;if(hp<=0)ld(i)}
+if(o.ok){
+tn(659,.12);setTimeout(()=>tn(880,.18),90);m.style.display='none';
+if(isBoss){clearInterval(td);clearInterval(bt);sc=Math.max(80,Math.round(300-susp*1.5-parseFloat(sec)));document.getElementById('sa').style.display='block';document.getElementById('rmg').innerText=`👑 智退老狼、稱霸森林！總分：${sc} ｜ 耗時：${sec}秒`;rk(1)}
+else{st++;wave=40;document.getElementById('st').innerText=st;run=1;if(fw>=8&&st>=5&&!boss){boss=1;setTimeout(()=>ask(Q.at(5),1),400)}}
+}else{addSusp(35);tn(130,.35,'sawtooth',.2);b.innerText="❌ 老虎起疑心了！（懷疑度 +35%），重選！";b.disabled=true}
 };bx.appendChild(b);
 });
 }
-function rk(s){document.getElementById('rm').style.display=s?'flex':'none';if(s){let d=JSON.parse(localStorage.getItem('ft3')||'[]');document.getElementById('rl').innerHTML=d.length?d.map((r,i)=>`<tr><td>${i+1}</td><td>${r.n}</td><td>${r.s}</td><td>${r.t}s</td></tr>`).join(''):'<tr><td colspan="4">尚無紀錄</td></tr>'}}
-function sv(){let n=document.getElementById('un').value.trim();if(!n)return alert("請輸入名字");let d=JSON.parse(localStorage.getItem('ft3')||'[]');d.push({n,s:sc,t:parseFloat(sec)});d.sort((a,b)=>b.s-a.s||a.t-b.t);localStorage.setItem('ft3',JSON.stringify(d.slice(0,10)));document.getElementById('sa').style.display='none';rk(1)}
-function qr(s){
-document.getElementById('qm').style.display=s?'flex':'none';
-if(!s)return;
-const u=location.href,box=document.getElementById('qrcode'),txt=document.getElementById('qurl');
-box.innerHTML='';
-if(u.startsWith('file://')){
-box.innerHTML='<p style="color:#c0392b;font-weight:bold">⚠️ 目前是電腦本機檔案，請用 GitHub 網址打開此遊戲，QR Code 就會自動出現！</p>';
-txt.innerText='';
-}else{
-new QRCode(box,{text:u,width:200,height:200});
-txt.innerText=u;
+(function lp(){
+requestAnimationFrame(lp);
+let tdist=Math.hypot(fx.x-tg.x,fx.y-tg.y);
+if(run){
+if(stun>0)stun--;
+else{
+let sp=4.8;
+if(keys['w']||keys['arrowup']){fx.y-=sp;fx.ty=fx.y}if(keys['s']||keys['arrowdown']){fx.y+=sp;fx.ty=fx.y}
+if(keys['a']||keys['arrowleft']){fx.x-=sp;fx.tx=fx.x}if(keys['d']||keys['arrowright']){fx.x+=sp;fx.tx=fx.x}
+let dx=fx.tx-fx.x,dy=fx.ty-fx.y,d=Math.hypot(dx,dy);if(d>5){fx.x+=(dx/d)*sp;fx.y+=(dy/d)*sp}
+fx.x=Math.max(40,Math.min(1460,fx.x));fx.y=Math.max(40,Math.min(1460,fx.y));
 }
+let tdx=fx.x-tg.x,tdy=fx.y-tg.y;tdist=Math.hypot(tdx,tdy);
+if(tdist>65){tg.x+=(tdx/tdist)*4.1;tg.y+=(tdy/tdist)*4.1}
+if(tdist>240)addSusp(.12);
+traps.forEach(tr=>{if(!tr.used&&Math.hypot(fx.x-tr.x,fx.y-tr.y)<32){tr.used=1;stun=90;addSusp(15);tn(150,.3,'sawtooth',.2)}});
+herbs.forEach(hb=>{if(!hb.used&&Math.hypot(fx.x-hb.x,fx.y-hb.y)<35){hb.used=1;addSusp(-25);tn(784,.2)}});
+beasts.forEach(b=>{
+if(!b.flee&&Math.hypot(fx.x-b.x,fx.y-b.y)<85){
+if(tdist<=190){b.flee=1;fw++;wave=35;tn(587,.15);document.getElementById('fw').innerText=fw;let ang=Math.atan2(b.y-tg.y,b.x-tg.x);b.vx=Math.cos(ang)*7;b.vy=Math.sin(ang)*7;if(fw>=8&&st>=5&&!boss){boss=1;setTimeout(()=>ask(Q.at(5),1),400)}}
+else{addSusp(.3)}
 }
+if(b.flee){b.x+=b.vx;b.y+=b.vy}
+});
+pillars.forEach(p=>{if(!p.done&&Math.hypot(fx.x-p.x,fx.y-p.y)<55){p.done=1;fx.tx=fx.x;fx.ty=fx.y;ask(p.q,0)}});
+}
+x.fillStyle="#235c2b";x.fillRect(0,0,W,H);x.save();x.translate(W/2-fx.x,H/2-fx.y);
+x.strokeStyle="#f1c40f";x.lineWidth=6;x.strokeRect(20,20,1460,1460);
+x.textAlign="center";x.font="40px Arial";trees.forEach(t=>x.fillText(t.ic,t.x,t.y));
+traps.forEach(tr=>{if(!tr.used){x.font="28px Arial";x.fillText("🪤",tr.x,tr.y)}});
+herbs.forEach(hb=>{if(!hb.used){x.font="30px Arial";x.fillText("🌿",hb.x,hb.y)}});
+pillars.forEach(p=>{x.font="44px Arial";x.fillText(p.done?"✅":"🗿",p.x,p.y)});
+beasts.forEach(b=>{x.font="38px Arial";x.fillText(b.ic,b.x,b.y);if(b.flee){x.font="15px Arial";x.fillStyle="#fff";x.fillText("😱快逃!",b.x,b.y-26)}});
+// 虎威黃金連線
+x.strokeStyle=tdist<=190?"rgba(46,204,113,.7)":"rgba(231,76,60,.7)";x.lineWidth=4;x.beginPath();x.moveTo(fx.x,fx.y);x.lineTo(tg.x,tg.y);x.stroke();
+if(wave>0){wave--;x.strokeStyle="rgba(241,196,15,"+(wave/40)+")";x.lineWidth=5;x.beginPath();x.arc(tg.x,tg.y,(40-wave)*4,0,7);x.stroke()}
+x.font="46px Arial";x.fillText(stun>0?"💫🦊":"🦊",fx.x,fx.y);x.font="58px Arial";x.fillText("🐯",tg.x,tg.y);x.restore();
+// 右下角雷達小地圖
+let mw=110,mx=W-mw-15,my=H-mw-15;x.fillStyle="rgba(0,0,0,.7)";x.fillRect(mx,my,mw,mw);x.strokeStyle="#f1c40f";x.lineWidth=2;x.strokeRect(mx,my,mw,mw);
+pillars.forEach(p=>{if(!p.done){x.fillStyle="#f1c40f";x.fillRect(mx+(p.x/1500)*mw-3,my+(p.y/1500)*mw-3,6,6)}});
+beasts.forEach(b=>{if(!b.flee){x.fillStyle="#e74c3c";x.fillRect(mx+(b.x/1500)*mw-2,my+(b.y/1500)*mw-2,4,4)}});
+x.fillStyle="#2ecc71";x.beginPath();x.arc(mx+(fx.x/1500)*mw,my+(fx.y/1500)*mw,4,0,7);x.fill();
+})();
+function rk(s){document.getElementById('rm').style.display=s?'flex':'none';if(s){let d=JSON.parse(localStorage.getItem('ftrpg2')||JSON.stringify(new Array()));document.getElementById('rl').innerHTML=d.length?d.map((r,i)=>`<tr><td>${i+1}</td><td>${r.n}</td><td>${r.s}</td><td>${r.t}s</td></tr>`).join(''):'<tr><td colspan="4">尚無紀錄</td></tr>'}}
+function sv(){let n=document.getElementById('un').value.trim();if(!n)return alert("請輸入名字");let d=JSON.parse(localStorage.getItem('ftrpg2')||JSON.stringify(new Array()));d.push({n,s:sc,t:parseFloat(sec)});d.sort((a,b)=>b.s-a.s||a.t-b.t);localStorage.setItem('ftrpg2',JSON.stringify(d.slice(0,10)));document.getElementById('sa').style.display='none';rk(1)}
+function qr(){let u=location.href;if(u.startsWith('file://'))alert("⚠️ 請用 GitHub 網址開啟此網頁，再點右上角 Chrome 分享按鈕就能生出 QR Code！");else window.open("https://qrserver.com"+encodeURIComponent(u),"_blank")}
 </script>
 </body>
 </html>
